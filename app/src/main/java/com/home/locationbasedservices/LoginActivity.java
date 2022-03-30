@@ -1,7 +1,9 @@
 package com.home.locationbasedservices;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -78,7 +80,10 @@ public class LoginActivity extends AppCompatActivity {
                                             .show();
                                     progressbar.setVisibility(View.GONE);
 
-                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                                    sharedPreferences.edit().putBoolean(Common.PREFERENCE_IS_LOGGED_IN, true).apply();
+
+                                    Intent intent = new Intent(LoginActivity.this, MapActivity.class);
                                     startActivity(intent);
                                 } else {
                                     Toast.makeText(getApplicationContext(),
