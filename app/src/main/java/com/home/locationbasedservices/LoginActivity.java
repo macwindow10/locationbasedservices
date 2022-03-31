@@ -82,6 +82,7 @@ public class LoginActivity extends AppCompatActivity {
 
                                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                                     sharedPreferences.edit().putBoolean(Common.PREFERENCE_IS_LOGGED_IN, true).apply();
+                                    sharedPreferences.edit().putString(Common.PREFERENCE_USER_EMAIL, email).apply();
 
                                     Intent intent = new Intent(LoginActivity.this, MapActivity.class);
                                     startActivity(intent);
