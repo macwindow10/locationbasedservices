@@ -20,6 +20,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -64,8 +65,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 mMap.clear();
                 for (Task task : tasks) {
                     LatLng latLng = new LatLng(task.getLatitude(), task.getLongitude());
-                    mMap.addMarker(new MarkerOptions().position(latLng)
-                            .title(task.getTitle()));
+                    MarkerOptions marker = new MarkerOptions()
+                            .position(latLng)
+                            .title(task.getTitle())
+                            .snippet(task.getDescription());
+                    marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.pin));
+                    mMap.addMarker(marker);
                 }
             }
 

@@ -3,6 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../.gradle/caches/transforms-3/3b185c71f62a8e5ce74dbacb5af9ac95/transformed/material-1.5.0/res/drawable/material_ic_calendar_black_24dp.xml" value="0.1" />
+        <entry key="../../../.gradle/caches/transforms-3/44bfd029d1ff3c8c1bbb2da4243422d5/transformed/firebase-messaging-23.0.2/res/drawable-anydpi-v24/icon_with_gradient.xml" value="0.107" />
+        <entry key="../../../.gradle/caches/transforms-3/4cbcb2a139875109bde94b7e730430f9/transformed/appcompat-1.4.1/res/drawable/abc_btn_check_material.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.107" />
+        <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.107" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.165" />
         <entry key="app/src/main/res/layout/activity_map.xml" value="0.1" />
