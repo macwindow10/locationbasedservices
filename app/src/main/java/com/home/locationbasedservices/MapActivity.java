@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -22,9 +23,22 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.home.locationbasedservices.model.Task;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Map;
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
 
+    ArrayList<Task> tasks = new ArrayList<>();
+    private FirebaseDatabase firebaseDatabase;
+    private DatabaseReference databaseReference;
     private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationClient;
     private LatLng latLngCurrent;
@@ -36,6 +50,30 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_map);
+
+        firebaseDatabase = FirebaseDatabase.getInstance("https://androidlocationbasedservices-default-rtdb.asia-southeast1.firebasedatabase.app/");
+        databaseReference = firebaseDatabase.getReference("UserTasks");
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    Task value = child.getValue(Task.class);
+                    tasks.add(value);
+                }
+
+                mMap.clear();
+                for (Task task : tasks) {
+                    LatLng latLng = new LatLng(task.getLatitude(), task.getLongitude());
+                    mMap.addMarker(new MarkerOptions().position(latLng)
+                            .title(task.getTitle()));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
