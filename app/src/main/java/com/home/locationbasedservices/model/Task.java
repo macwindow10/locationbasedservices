@@ -1,5 +1,7 @@
 package com.home.locationbasedservices.model;
 
+import java.util.Date;
+
 public class Task {
 
     private String userEmail;
@@ -9,6 +11,8 @@ public class Task {
     private Double longitude;
     private boolean notificationReminder;
     private boolean alarmRingerReminder;
+    private Date creationDate;
+    private Date reminderDate;
 
     public Task() {
 
@@ -68,5 +72,17 @@ public class Task {
 
     public void setAlarmRingerReminder(boolean alarmRingerReminder) {
         this.alarmRingerReminder = alarmRingerReminder;
+    }
+
+    public Date getCreationDate() { return creationDate; }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public Date getReminderDate() { return reminderDate; }
+
+    public void setReminderDate(Date reminderDate) {
+        this.reminderDate = reminderDate;
     }
 }
