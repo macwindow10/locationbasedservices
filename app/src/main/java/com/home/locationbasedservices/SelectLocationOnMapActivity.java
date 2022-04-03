@@ -92,6 +92,7 @@ public class SelectLocationOnMapActivity extends FragmentActivity implements OnM
             return;
         }
         mMap.setMyLocationEnabled(true);
+        mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(@NonNull LatLng latLng) {

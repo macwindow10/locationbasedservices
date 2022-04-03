@@ -55,9 +55,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
         firebaseDatabase = FirebaseDatabase.getInstance("https://androidlocationbasedservices-default-rtdb.asia-southeast1.firebasedatabase.app/");
         databaseReference = firebaseDatabase.getReference("UserTasks");
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                //Toast.makeText(MapActivity.this, "addValueEventListener", Toast.LENGTH_SHORT).show();
                 for (DataSnapshot child : snapshot.getChildren()) {
                     Task value = child.getValue(Task.class);
                     tasks.add(value);
@@ -81,6 +82,18 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             }
         });
 
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -89,7 +102,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         buttonAddTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MapActivity.this, TaskActivity.class));
+                startActivityForResult(new Intent(MapActivity.this, TaskActivity.class), 1);
             }
         });
 
@@ -118,6 +131,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             return;
         }
         mMap.setMyLocationEnabled(true);
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+
         fusedLocationClient.getLastLocation()
                 .addOnSuccessListener(this, new OnSuccessListener<Location>() {
                     @Override
@@ -130,5 +145,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                         }
                     }
                 });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
