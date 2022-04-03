@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -32,6 +33,8 @@ public class TaskActivity extends AppCompatActivity {
     private DatabaseReference databaseReference;
     private DatabaseReference databaseReferenceTasks;
     private Calendar calendarReminderDateTime = Calendar.getInstance();
+    private Double latitude = 0.0;
+    private Double longitude = 0.0;
     private EditText editTextTitle;
     private EditText editTextDescription;
     private EditText editTextLatitude;
@@ -83,7 +86,8 @@ public class TaskActivity extends AppCompatActivity {
         buttonSelectLocationFromMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(TaskActivity.this, SelectLocationOnMapActivity.class);
+                startActivityForResult(intent, 1);
             }
         });
 
@@ -100,15 +104,28 @@ public class TaskActivity extends AppCompatActivity {
                 if (TextUtils.isEmpty(title)) {
                     return;
                 }
-                if (TextUtils.isEmpty(latitude)) {
+                if (TextUtils.isEmpty(latitude) || latitude.equals("0.0")) {
                     return;
                 }
-                if (TextUtils.isEmpty(longitude)) {
+                if (TextUtils.isEmpty(longitude) || longitude.equals("0.0")) {
                     return;
                 }
                 addDataToFirebase(title, description, latitude, longitude, notification, ringerAlarm);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == 1) {
+            latitude = data.getDoubleExtra("SelectedLat", 0.0);
+            longitude = data.getDoubleExtra("SelectedLong", 0.0);
+            editTextLatitude.setText(String.valueOf(latitude));
+            editTextLongitude.setText(String.valueOf(longitude));
+        } else if (resultCode == 2) {
+            // user cancelled
+        }
     }
 
     private void addDataToFirebase(String title, String description, String latitude, String longitude, boolean notification, boolean ringerAlarm) {

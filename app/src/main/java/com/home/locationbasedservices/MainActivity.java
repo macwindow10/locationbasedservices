@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         boolean isLoggedIn = sharedPreferences.getBoolean(Common.PREFERENCE_IS_LOGGED_IN, false);
         if (isLoggedIn) {
             startActivity(new Intent(MainActivity.this, MapActivity.class));
+            finish();
         }
     }
 }

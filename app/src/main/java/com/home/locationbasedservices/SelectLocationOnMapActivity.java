@@ -11,7 +11,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
@@ -33,71 +32,49 @@ import com.google.firebase.database.ValueEventListener;
 import com.home.locationbasedservices.model.Task;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Map;
 
-public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
+public class SelectLocationOnMapActivity extends FragmentActivity implements OnMapReadyCallback {
 
-    ArrayList<Task> tasks = new ArrayList<>();
-    private FirebaseDatabase firebaseDatabase;
-    private DatabaseReference databaseReference;
     private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationClient;
     private LatLng latLngCurrent;
-    private Button buttonAddTask;
-    private Button buttonSetSoundProfile;
+    private LatLng latLngSelected;
+    private Button buttonOK;
+    private Button buttonCancel;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_map);
-
-        firebaseDatabase = FirebaseDatabase.getInstance("https://androidlocationbasedservices-default-rtdb.asia-southeast1.firebasedatabase.app/");
-        databaseReference = firebaseDatabase.getReference("UserTasks");
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot child : snapshot.getChildren()) {
-                    Task value = child.getValue(Task.class);
-                    tasks.add(value);
-                }
-
-                mMap.clear();
-                for (Task task : tasks) {
-                    LatLng latLng = new LatLng(task.getLatitude(), task.getLongitude());
-                    MarkerOptions marker = new MarkerOptions()
-                            .position(latLng)
-                            .title(task.getTitle())
-                            .snippet(task.getDescription());
-                    marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.pin));
-                    mMap.addMarker(marker);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+        setContentView(R.layout.activity_select_location_on_map);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        buttonAddTask = findViewById(R.id.button_add_task);
-        buttonAddTask.setOnClickListener(new View.OnClickListener() {
+        buttonOK = findViewById(R.id.button_ok);
+        buttonOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MapActivity.this, TaskActivity.class));
+                if (latLngSelected == null) {
+                    Toast.makeText(SelectLocationOnMapActivity.this, "Select Location", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Intent intent = new Intent();
+                intent.putExtra("SelectedLat", latLngSelected.latitude);
+                intent.putExtra("SelectedLong", latLngSelected.longitude);
+                setResult(1, intent);
+                finish();
             }
         });
 
-        buttonSetSoundProfile = findViewById(R.id.button_set_sound_profile);
-        buttonSetSoundProfile.setOnClickListener(new View.OnClickListener() {
+        buttonCancel = findViewById(R.id.button_cancel);
+        buttonCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent();
+                setResult(2, intent);
+                finish();
             }
         });
 
@@ -109,15 +86,26 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        //LatLng toVisitPlace = new LatLng(30, 72);
-        //mMap.addMarker(new MarkerOptions().position(toVisitPlace).title("Location"));
-        //mMap.moveCamera(CameraUpdateFactory.newLatLng(toVisitPlace));
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(this, "Location permission required", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
         mMap.setMyLocationEnabled(true);
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(@NonNull LatLng latLng) {
+                mMap.clear();
+                MarkerOptions marker = new MarkerOptions()
+                        .position(latLng);
+                marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.pin));
+                mMap.addMarker(marker);
+
+                latLngSelected = latLng;
+
+            }
+        });
+
         fusedLocationClient.getLastLocation()
                 .addOnSuccessListener(this, new OnSuccessListener<Location>() {
                     @Override

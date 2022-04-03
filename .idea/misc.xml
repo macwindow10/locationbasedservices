@@ -12,6 +12,7 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.165" />
         <entry key="app/src/main/res/layout/activity_map.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_registration.xml" value="0.13134057971014493" />
+        <entry key="app/src/main/res/layout/activity_select_location_on_map.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_task.xml" value="0.20380434782608695" />
       </map>
     </option>

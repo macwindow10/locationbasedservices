@@ -37,6 +37,7 @@
         <activity android:name=".LoginActivity" />
         <activity android:name=".MapActivity" />
         <activity android:name=".TaskActivity" />
+        <activity android:name=".SelectLocationOnMapActivity" />
     </application>
 
 </manifest>
